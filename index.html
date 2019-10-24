@@ -1,21 +1,29 @@
-
-<script>
-function browserRedirect() {
-    var sUserAgent = navigator.userAgent.toLowerCase();
-    var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
-    var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
-    var bIsMidp = sUserAgent.match(/midp/i) == "midp";
-    var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
-    var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
-    var bIsAndroid = sUserAgent.match(/android/i) == "android";
-    var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
-    var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
-    if (!(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) ){
-        window.location.href="https://banszd.top";
-    } else {
-        window.location.href="https://banszd.top";
-    }
-}
-browserRedirect();
-</script>
+<?php
+ function curl($url){
+ $headers = array();
+ $headers[] = 'Accept: */*';
+ $headers[] = 'Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3';
+ $headers[] = 'Accept-Encoding: gzip, deflate, br';
+ $headers[] = 'Referer: https://www.pixiv.net/';
+ $headers[] = 'Connection: keep-alive';
+ $headers[] = 'Cache-Control: max-age=0';
+ $curl = curl_init();
+ curl_setopt($curl,CURLOPT_URL,$url);
+ curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);
+ curl_setopt($curl,CURLOPT_CONNECTTIMEOUT,60);
+ curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+ curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 iHuan Firefox/54.0");
+ $src = curl_exec($curl);
+ curl_close($curl); 
+ return $src;
+ }
+ $data = file_get_contents('https://www.pixiv.net/');
+ preg_match_all('/value=\'(.*?)\'>/is',$data,$reg);
+ $img = json_decode($reg[1][0],true);
+ $num = 0;
+ foreach($img['pixivBackgroundSlideshow.illusts']['landscape'] as $data){
+ file_put_contents($num.'.jpg',curl(str_replace('https','http',$data['url']['1200x1200'])));
+ $num++;
+ }
+?>
 
